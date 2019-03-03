@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Aktuelt Projekt</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Damion"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav id="filter">
+      <button class="house-item" data-house="all">
+        All Houses <span id="countAll"></span>
+      </button>
+      <button class="house-item" data-house="Gryffindor">
+        Gryffindor <span id="countGryff"></span>
+      </button>
+      <button class="house-item" data-house="Hufflepuff">
+        Hufflepuff <span id="countHuff"></span>
+      </button>
+      <button class="house-item" data-house="Slytherin">
+        Slytherin <span id="countSlyth"></span>
+      </button>
+      <button class="house-item" data-house="Ravenclaw">
+        Ravenclaw <span id="countRaven"></span>
+      </button>
+    </nav>
+    <nav id="sort">
+      <button class="sort-item" id="btnFirst">
+        Sort by: First Name
+      </button>
+      <button class="sort-item" id="btnLast">Sort by: Last Name</button>
+      <button class="sort-item" id="btnHouse">Sort by: House</button>
+    </nav>
+    <div class="inqSquadOpener">
+      <p>SQUAD</p>
+    </div>
+    <div class="addMe">
+      <p>Add Me</p>
+    </div>
+    <div class="inqSquadContainer"></div>
+    <div class="templateContainer"></div>
+    <template>
+      <div class="articleContainer">
+        <article>
+          <p>Name: <span id="firstName"></span> <span id="lastName"></span></p>
+          <p>House: <span id="house"></span></p>
+          <p>Blood Status: <span id="bloodStatus"></span></p>
+          <div id="inqStatus"></div>
+        </article>
+        <button id="expelButton">Expel This Student!</button>
+        <div id="inqSquad"></div>
+      </div>
+    </template>
+    <div class="modalBox">
+      <div class="modalContainer">
+        <div class="imgContainer">
+          <img src="" id="modalImg" />
+          <img src="" id="portrait" onerror="this.src='default.png'" />
+        </div>
+        <button id="lukModalKnap">X</button>
+
+        <div class="textContainer">
+          <p>
+            Name: <span id="modal_firstName"></span>
+            <span id="modal_lastName"></span>
+          </p>
+          <p>House: <span id="modal_house"></span></p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+<style>
+  .templateContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+  .inqSquadOpener {
+    width: 5vw;
+    height: 5vw;
+    background-color: blue;
+    border-radius: 5vw;
+    position: fixed;
+    right: 1vw;
+    top: 5vw;
+
+    color: white;
+    text-align: center;
+    z-index: 2;
+  }
+  .inqSquadContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    z-index: 1;
+  }
+  .addMe {
+    width: 5vw;
+    height: 5vw;
+    background-color: green;
+    border-radius: 5vw;
+    position: fixed;
+    left: 1vw;
+    top: 5vw;
+
+    color: white;
+    text-align: center;
+    z-index: 2;
+  }
+
+  html {
+    scrollbar-color: black;
+  }
+  .modalBox {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: white;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.5s;
+  }
+  .modalContainer {
+    position: fixed;
+    width: 40vw;
+    height: 40vw;
+    left: 30vw;
+    height: 10vw;
+    top: 10vw;
+  }
+  #lukModalKnap {
+    position: absolute;
+    right: 1vw;
+    top: 1vw;
+  }
+  .imgContainer {
+    width: 40vw;
+    height: 10vw;
+  }
+  #modalImg {
+    width: 40vw;
+    background-repeat: repeat-x;
+    height: 10vw;
+  }
+  #portrait {
+    margin-left: 10vw;
+    width: 10vw;
+    height: 10vw;
+  }
+  article {
+    border-style: solid;
+    border-radius: 1vw;
+    margin: 1vw;
+    background-color: white;
+    text-align: center;
+    font-family: "Damion", cursive;
+    font-size: 1.6em;
+  }
+
+  body {
+    background-color: darkgrey;
+  }
+  button {
+    border-style: solid;
+    border-color: black;
+    border-radius: 5vw;
+    background-color: black;
+    color: white;
+    font-size: 2em;
+  }
+  #filter {
+    width: 100%;
+    display: grid;
+    grid-gap: 2vw;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  }
+  #sort {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+
+    grid-gap: 1vw;
+  }
+  .gryffindor {
+    background-color: #ce3a0a;
+    color: #fdb02e;
+  }
+
+  .hufflepuf {
+    background-color: #ffc02a;
+    color: #0b0000;
+  }
+
+  .ravenclaw {
+    background-color: #395f9d;
+    color: #e9ba36;
+  }
+
+  .slytherin {
+    background-color: #588c39;
+    color: #c0b1c6;
+  }
+</style>
+<script>
+  "use strict";
+  let dest = document.querySelector(".templateContainer");
+  let template = document.querySelector("template");
+  let activeArray;
+  let personlisteJson = [];
+  let bloodTypeJson;
+  let houseFilter = "all";
+  let inqSquadArray = [];
+
+  const studentProto = {
+    firstName: "-first name-",
+    lastName: "-last name-",
+    middleName: "-middle name-",
+    house: "-house of student-",
+    image: "-image of student-",
+    bloodStatus: "-blood status-",
+    inqStatus: "-Inq Status-"
+  };
+
+  window.addEventListener("load", function(event) {
+    getJson();
+    document
+      .querySelector(".inqSquadOpener")
+      .addEventListener("click", function() {
+        showInqSquad();
+      });
+  });
+
+  async function getJson() {
+    let myJson = await fetch("http://petlatkea.dk/2019/hogwarts/students.json");
+    personlisteJson = await myJson.json();
+    let bloodJson = await fetch(
+      "http://petlatkea.dk/2019/hogwarts/families.json"
+    );
+    bloodTypeJson = await bloodJson.json();
+    console.log(bloodTypeJson);
+
+    document.querySelectorAll(".house-item").forEach(knap => {
+      knap.addEventListener("click", filterForHouse);
+    });
+
+    spliceTheArray(personlisteJson);
+  }
+
+  function filterForHouse() {
+    houseFilter = this.getAttribute("data-house");
+    filterByType(houseFilter);
+  }
+
+  function filterByType(house) {
+    function filterType(element) {
+      return house === "all" || element.house === house;
+    }
+    const fakeJson = activeArray.filter(filterType);
+    visListe(fakeJson);
+  }
+
+  function spliceTheArray(inputArray) {
+    const splicedArray = [];
+
+    inputArray.forEach(student => {
+      const firstSpace = student.fullname.indexOf(" ");
+      const secondSpace = student.fullname.lastIndexOf(" ");
+
+      const firstName = student.fullname.slice(0, firstSpace);
+      // const middleName = fullname.slice(firstSpace, secondSpace);
+      const lastName = student.fullname.slice(secondSpace + 1);
+
+      let splicedStudent = Object.create(studentProto);
+      splicedStudent.firstName = firstName;
+      splicedStudent.lastName = lastName;
+      splicedStudent.house = student.house;
+      splicedStudent.image = lastName + "_" + firstName.charAt(0) + ".png";
+
+      splicedArray.push(splicedStudent);
+    });
+    activeArray = splicedArray;
+    visListe(splicedArray);
+  }
+
+  function visListe(studentArray) {
+    dest.textContent = "";
+    findBloodStatus();
+
+    studentArray.forEach(person => {
+      {
+        let klon = template.cloneNode(true).content;
+
+        klon.querySelector("#firstName").textContent = person.firstName;
+        klon.querySelector("#lastName").textContent = person.lastName;
+        klon.querySelector("#house").textContent = person.house;
+        klon.querySelector("article").addEventListener("click", () => {
+          visModal(person, studentArray);
+        });
+        klon
+          .querySelector("#expelButton")
+          .addEventListener("click", function() {
+            removeStudent(person, studentArray);
+          });
+        klon.querySelector("#bloodStatus").textContent = person.bloodStatus;
+        if (person.bloodStatus === "Pure" || person.house === "Slytherin") {
+          let btn = document.createElement("BUTTON");
+          let t = document.createTextNode(" Add to INQ Squad");
+          btn.appendChild(t);
+          btn.id = "inqSuad";
+          let btnDest = klon.querySelector("#inqSquad");
+          btnDest.appendChild(btn);
+        }
+        klon.querySelector("#inqSquad").addEventListener("click", function() {
+          addToInq(person);
+        });
+
+        dest.appendChild(klon);
+      }
+    });
+    // update counters
+    const counts = {
+      Gryffindor: 0,
+      Slytherin: 0,
+      Hufflepuff: 0,
+      Ravenclaw: 0
+    };
+
+    activeArray.forEach(student => {
+      counts[student.house]++;
+    });
+    document.querySelector("#countAll").innerHTML = activeArray.length;
+    document.getElementById("countGryff").innerHTML = counts.Gryffindor;
+    document.getElementById("countSlyth").innerHTML = counts.Slytherin;
+    document.getElementById("countHuff").innerHTML = counts.Hufflepuff;
+    document.getElementById("countRaven").innerHTML = counts.Ravenclaw;
+
+    sortArrayList(studentArray);
+    document.querySelector(".addMe").addEventListener("click", function() {
+      addMeFunc();
+    });
+  }
+
+  function findBloodStatus() {
+    activeArray.forEach(student => {
+      bloodTypeJson.pure.forEach(name => {
+        if (name === student.lastName) {
+          student.bloodStatus = "Pure";
+        }
+      });
+      bloodTypeJson.half.forEach(name => {
+        if (name === student.lastName) {
+          student.bloodStatus = "Half";
+        }
+      });
+      if (student.bloodStatus === "-blood status-") {
+        student.bloodStatus = "Muggle";
+      }
+    });
+  }
+
+  function sortArrayList(forSort) {
+    document.getElementById("btnFirst").addEventListener("click", function() {
+      sortForFirstName(forSort);
+    });
+    document.getElementById("btnLast").addEventListener("click", function() {
+      sortForLastName(forSort);
+    });
+    document.getElementById("btnHouse").addEventListener("click", function() {
+      sortForHouse(forSort);
+    });
+  }
+
+  function sortForFirstName(sortArray) {
+    sortArray.sort(compareFirstName);
+    console.log(sortArray);
+    visListe(sortArray);
+  }
+  function sortForLastName(sortArray) {
+    sortArray.sort(compareLastName);
+    console.log(sortArray);
+    visListe(sortArray);
+  }
+  function sortForHouse(sortArray) {
+    sortArray.sort(compareHouses);
+    console.log(sortArray);
+    visListe(sortArray);
+  }
+
+  function compareLastName(a, b) {
+    if (a.lastName < b.lastName) {
+      return -1;
+    } else {
+      return 1;
+    }
+  }
+  function compareFirstName(a, b) {
+    if (a.firstName < b.firstName) {
+      return -1;
+    } else {
+      return 1;
+    }
+  }
+  function compareHouses(a, b) {
+    if (a.house < b.house) {
+      return -1;
+    } else {
+      return 1;
+    }
+  }
+
+  function visModal(person, studentArray) {
+    document.querySelector(".modalBox").style.opacity = 1;
+    document.querySelector(".modalBox").style.pointerEvents = "all";
+    let imageName = person.image.toLowerCase();
+    document.querySelector("#modal_firstName").textContent = person.firstName;
+    document.querySelector("#modal_lastName").textContent = person.lastName;
+    document.querySelector("#modal_house").textContent = person.house;
+    document.querySelector("#portrait").src = "images/" + imageName;
+
+    document.getElementById("lukModalKnap").addEventListener("click", lukModal);
+
+    if (person.house == "Gryffindor") {
+      document.querySelector(".modalBox").classList.add("gryffindor");
+      document.querySelector(".modalBox").classList.remove("hufflepuf");
+      document.querySelector(".modalBox").classList.remove("slytherin");
+      document.querySelector(".modalBox").classList.remove("ravenclaw");
+      document.querySelector("#modalImg").src = "images/gryff.png";
+    }
+    if (person.house == "Hufflepuff") {
+      document.querySelector(".modalBox").classList.add("hufflepuf");
+      document.querySelector(".modalBox").classList.remove("gryffindor");
+      document.querySelector(".modalBox").classList.remove("slytherin");
+      document.querySelector(".modalBox").classList.remove("ravenclaw");
+      document.querySelector("#modalImg").src = "images/huffle.png";
+    }
+    if (person.house == "Slytherin") {
+      document.querySelector(".modalBox").classList.add("slytherin");
+      document.querySelector(".modalBox").classList.remove("hufflepuf");
+      document.querySelector(".modalBox").classList.remove("gryffindor");
+      document.querySelector(".modalBox").classList.remove("ravenclaw");
+      document.querySelector("#modalImg").src = "images/slyt.png";
+    }
+    if (person.house == "Ravenclaw") {
+      document.querySelector(".modalBox").classList.add("ravenclaw");
+      document.querySelector(".modalBox").classList.remove("hufflepuf");
+      document.querySelector(".modalBox").classList.remove("gryffindor");
+      document.querySelector(".modalBox").classList.remove("slytherin");
+      document.querySelector("#modalImg").src = "images/raven.png";
+    }
+  }
+  function lukModal() {
+    document.querySelector(".modalBox").style.opacity = 0;
+    document.querySelector(".modalBox").style.pointerEvents = "none";
+  }
+
+  function removeStudent(person) {
+    console.log("REMOVE");
+
+    let objectIndex = indexByName(person.firstName);
+    console.log(objectIndex);
+    activeArray.splice(objectIndex, 1);
+
+    visListe(activeArray);
+  }
+
+  function indexByName(firstName) {
+    return activeArray.findIndex(obj => obj.firstName === firstName);
+  }
+  function addToInq(person) {
+    let inqSquadMember = person;
+    inqSquadArray.push(inqSquadMember);
+    console.log(inqSquadArray);
+
+    displayInqSquad();
+  }
+  function showInqSquad() {
+    var x = document.querySelector(".inqSquadContainer");
+    if (x.style.display === "none") {
+      x.style.display = "grid";
+    } else {
+      x.style.display = "none";
+    }
+  }
+
+  function displayInqSquad() {
+    let inqDest = document.querySelector(".inqSquadContainer");
+    inqDest.textContent = "";
+    inqSquadArray.forEach(person => {
+      {
+        let klon = template.cloneNode(true).content;
+
+        klon.querySelector("#firstName").textContent = person.firstName;
+        klon.querySelector("#lastName").textContent = person.lastName;
+        klon.querySelector("#house").textContent = person.house;
+
+        klon.querySelector("#bloodStatus").textContent = person.bloodStatus;
+        klon.querySelector("#expelButton").style.display = "none";
+
+        let btn = document.createElement("BUTTON");
+        let t = document.createTextNode("Remove from INQ Squad");
+        btn.appendChild(t);
+        btn.id = "inqSuad";
+        let btnDest = klon.querySelector("#inqSquad");
+        btnDest.appendChild(btn);
+
+        klon.querySelector("#inqSquad").addEventListener("click", function() {
+          removeFromInq(person);
+        });
+
+        inqDest.appendChild(klon);
+      }
+    });
+  }
+  function removeFromInq(person) {
+    console.log("REMOVE");
+
+    let objectIndex = indexByInq(person.firstName);
+    console.log(objectIndex);
+    inqSquadArray.splice(objectIndex, 1);
+    console.log(inqSquadArray);
+    displayInqSquad(inqSquadArray);
+  }
+
+  function indexByInq(firstName) {
+    return inqSquadArray.findIndex(obj => obj.firstName === firstName);
+  }
+  const objectMe = {
+    firstName: "Søren",
+    lastName: "Rembøll",
+    middleName: "-middle name-",
+    house: "Slytherin",
+    image: "mig.jpg",
+    bloodStatus: "Pure",
+    inqStatus: "-Inq Status-"
+  };
+  function addMeFunc() {
+    console.log("ADD");
+    console.log(activeArray);
+    activeArray.push(objectMe);
+    visListe(activeArray);
+  }
+</script>
